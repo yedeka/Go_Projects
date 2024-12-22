@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/yedeka/Go_Projects/wctool"
+	"github.com/yedeka/Go_Projects/cmd/ccwc/wctool"
 )
 
 func count(fileContent []byte,
