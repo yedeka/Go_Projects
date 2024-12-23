@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/yedeka/Go_Projects/filehandling"
+	"github.com/yedeka/Go_Projects/cmd/ccwc/filehandling"
 )
 
 func HandleByteCount(filePath string) int64 {
