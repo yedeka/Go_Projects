@@ -1,9 +1,6 @@
 build-ccwc:
 	go build -o bin/ccwc cmd/ccwc/main.go
 
-clean:
-	rm -rf bin/
-
 run-ccwc-l: 
 	go run cmd/ccwc/main.go -l cmd/ccwc/input/test.txt
 
