@@ -1,6 +1,9 @@
+build-quiz:
+	go build -o bin/quizgame cmd/quizgame/main.go
+
 build-ccwc:
 	go build -o bin/ccwc cmd/ccwc/main.go
-
+	
 run-ccwc-l: 
 	go run cmd/ccwc/main.go -l cmd/ccwc/input/test.txt
 
