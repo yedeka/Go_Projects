@@ -118,5 +118,9 @@ func main() {
 	}
 	println("Starting your quiz now be ready!!!")
 	finalScore, err := askQuestions(Questions, limit)
+	if nil != err {
+		fmt.Println("Error while comparing questions with expected answers")
+		os.Exit(3)
+	}
 	fmt.Printf("You scored %d out of %d", finalScore, len(Questions))
 }
