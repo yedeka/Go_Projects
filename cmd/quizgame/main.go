@@ -53,7 +53,7 @@ func readCSV(csvPath string) ([]Question, error) {
 }
 
 func readArguments() (string, int) {
-	fileName := flag.String("quizInput", "default.csv", "A csv file in the format of {Question, answer} which defaults to default.csv")
+	fileName := flag.String("quizInput", "cmd/quizgame/default.csv", "A csv file in the format of {Question, answer} which defaults to default.csv")
 	limit := flag.Int("limit", 30, "Time limit for each question")
 	flag.Parse()
 	return *fileName, *limit
