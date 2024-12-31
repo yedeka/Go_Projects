@@ -14,7 +14,7 @@ type StoryParser struct {
 	File       *os.File
 }
 
-func (parser *StoryParser) Parse() (any, error) {
+func (parser *StoryParser) Parse() (model.Story, error) {
 	fmt.Printf("Type of parser used is %s \n", parser.ParserType)
 	decoder := json.NewDecoder(parser.File)
 	var story model.Story

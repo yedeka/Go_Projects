@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <ttile>Choose Your Own Adventure</ttile>
+    </head>
+    <body>
+        <h1>
+            {{.Title}}        
+        </h1>
+        {{range .Paragraphs}}
+            <p>{{.}}</p>
+        {{end}}
+        <ul>
+            {{range .Options}}
+                <li><a href ="/{{.ChapterName}}">{{.Text}}</a></li>    
+            {{end}}
+        </ul>
+    </body>
+</html>
