@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -30,7 +31,11 @@ func main() {
 		fmt.Println(err.Error())
 
 	}
-	storyHandler := handler.ReturnStoryHandler(story, "intro")
+	storyHandler, err := handler.ReturnStoryHandler(story, "intro")
+	if nil != err {
+		errors.New("Application startup failed to start Story Handler")
+		os.Exit(3)
+	}
 	fmt.Printf("Starting the server on %d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), storyHandler))
 }

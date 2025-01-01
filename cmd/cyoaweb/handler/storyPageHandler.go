@@ -11,13 +11,43 @@ import (
 	"github.com/yedeka/Go_Projects/cmd/cyoaweb/model"
 )
 
+type HandlerOpts func(handler *StoryPageHandler) error
+
 type StoryPageHandler struct {
-	currentStory     model.Story
-	RenderedChapter  string
-	RenderedTemplate *template.Template
+	currentStory         model.Story
+	RenderedChapter      string
+	RenderedTemplatePath string
+	RenderedTemplate     *template.Template
 }
 
-func (pageHandler *StoryPageHandler) setRenderingDetails(renderingChapter string, renderingTemplate string) error {
+func WithTemplateString(templateString string) HandlerOpts {
+	return func(handler *StoryPageHandler) error {
+		template, err := template.ParseFiles(templateString)
+		if nil != err {
+			return errors.New("error while rendering the page")
+		}
+		handler.RenderedTemplatePath = templateString
+		handler.RenderedTemplate = template
+		return nil
+	}
+}
+
+func NewstoryPageHandler(story model.Story, opts ...HandlerOpts) (StoryPageHandler, error) {
+	storyHandler := StoryPageHandler{
+		currentStory: story,
+	}
+
+	for _, options := range opts {
+		err := options(&storyHandler)
+		if nil != err {
+			return storyHandler, err
+		}
+
+	}
+	return storyHandler, nil
+}
+
+func (pageHandler *StoryPageHandler) setRenderingChapter(renderingChapter string) {
 	// Check for any path that is not intro and update the path in struct to render that path's details
 	if renderingChapter != "" && renderingChapter != "/" {
 		renderingChapter = renderingChapter[1:]
@@ -25,23 +55,13 @@ func (pageHandler *StoryPageHandler) setRenderingDetails(renderingChapter string
 		renderingChapter = "intro"
 	}
 	pageHandler.RenderedChapter = renderingChapter
-	template, err := template.ParseFiles(renderingTemplate)
-	if nil != err {
-		return errors.New("error while rendering the page")
-	}
-	pageHandler.RenderedTemplate = template
-	return nil
 }
 
 // ServeHTTP method returns the starting page for story.
 func (pageHandler StoryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimSpace(r.URL.Path)
-	renderingError := pageHandler.setRenderingDetails(path, "./ui/templates/index.html")
-	if nil != renderingError {
-		log.Fatal(renderingError.Error())
-		http.Error(w, renderingError.Error(), http.StatusInternalServerError)
-	}
-	fmt.Printf("Rendered Chapter => %s", pageHandler.RenderedChapter)
+	pageHandler.setRenderingChapter(path)
+	fmt.Printf("Rendered Chapter => %s \n", pageHandler.RenderedChapter)
 	if chapter, ok := pageHandler.currentStory[pageHandler.RenderedChapter]; ok {
 		err := pageHandler.RenderedTemplate.Execute(w, chapter)
 		if nil != err {
