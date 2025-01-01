@@ -36,5 +36,7 @@ func main() {
 		os.Exit(3)
 	}
 	fmt.Printf("Starting the server on %d\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), storyHandler))
+	mux := http.NewServeMux()
+	mux.Handle("/story/", storyHandler)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
 }

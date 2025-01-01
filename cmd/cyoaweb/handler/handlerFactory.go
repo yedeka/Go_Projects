@@ -24,8 +24,11 @@ func ReturnStoryHandler(story model.Story, chapterToRender string) (http.Handler
 func setRenderingChapter(r *http.Request) string {
 	path := strings.TrimSpace(r.URL.Path)
 	// Check for any path that is not intro and update the path in struct to render that path's details
-	if path == "" || path == "/" {
+	if path == "/story" || path == "/story/" {
+		fmt.Println("Got index page")
 		return "intro"
+
 	}
-	return path[1:]
+	fmt.Println("Did not get index page")
+	return path[len("/story/"):]
 }
