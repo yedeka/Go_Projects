@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -10,26 +12,38 @@ import (
 )
 
 type StoryPageHandler struct {
-	currentStory    model.Story
-	renderedChapter string
+	currentStory     model.Story
+	RenderedChapter  string
+	RenderedTemplate *template.Template
+}
+
+func (pageHandler *StoryPageHandler) setRenderingDetails(renderingChapter string, renderingTemplate string) error {
+	// Check for any path that is not intro and update the path in struct to render that path's details
+	if renderingChapter != "" && renderingChapter != "/" {
+		renderingChapter = renderingChapter[1:]
+	} else {
+		renderingChapter = "intro"
+	}
+	pageHandler.RenderedChapter = renderingChapter
+	template, err := template.ParseFiles(renderingTemplate)
+	if nil != err {
+		return errors.New("error while rendering the page")
+	}
+	pageHandler.RenderedTemplate = template
+	return nil
 }
 
 // ServeHTTP method returns the starting page for story.
 func (pageHandler StoryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./ui/templates/index.html")
-	if nil != err {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	path := strings.TrimSpace(r.URL.Path)
-	// Check for any path that is not intro and update the path in struct to render that path's details
-	if path != "" && path != "/" {
-		path = path[1:]
-		pageHandler.renderedChapter = path
+	renderingError := pageHandler.setRenderingDetails(path, "./ui/templates/index.html")
+	if nil != renderingError {
+		log.Fatal(renderingError.Error())
+		http.Error(w, renderingError.Error(), http.StatusInternalServerError)
 	}
-
-	if chapter, ok := pageHandler.currentStory[pageHandler.renderedChapter]; ok {
-		err = t.Execute(w, chapter)
+	fmt.Printf("Rendered Chapter => %s", pageHandler.RenderedChapter)
+	if chapter, ok := pageHandler.currentStory[pageHandler.RenderedChapter]; ok {
+		err := pageHandler.RenderedTemplate.Execute(w, chapter)
 		if nil != err {
 			log.Fatal(err.Error())
 			http.Error(w, "Something went wrong ...", http.StatusInternalServerError)
