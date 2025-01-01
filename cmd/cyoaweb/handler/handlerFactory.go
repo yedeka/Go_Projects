@@ -8,7 +8,7 @@ import (
 
 func ReturnStoryHandler(story model.Story, chapterToRender string) http.Handler {
 
-	return StoryPageHandler{
+	return &StoryPageHandler{
 		currentStory: story,
 	}
 }
