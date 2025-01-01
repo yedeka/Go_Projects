@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"github.com/yedeka/Go_Projects/cmd/cyoaweb/model"
@@ -19,13 +20,21 @@ func (pageHandler StoryPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Req
 	if nil != err {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-
 	}
-	fmt.Println("%v\n", pageHandler.currentStory)
-	fmt.Println("%s\n", pageHandler.renderedChapter)
-	err = t.Execute(w, pageHandler.currentStory[pageHandler.renderedChapter])
-	if nil != err {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	path := strings.TrimSpace(r.URL.Path)
+	// Check for any path that is not intro and update the path in struct to render that path's details
+	if path != "" && path != "/" {
+		path = path[1:]
+		pageHandler.renderedChapter = path
+	}
+
+	if chapter, ok := pageHandler.currentStory[pageHandler.renderedChapter]; ok {
+		err = t.Execute(w, chapter)
+		if nil != err {
+			log.Fatal(err.Error())
+			http.Error(w, "Something went wrong ...", http.StatusInternalServerError)
+		}
 		return
 	}
+	http.Error(w, "Could not find the Chapter provided in given story", http.StatusNotFound)
 }

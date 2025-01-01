@@ -31,6 +31,6 @@ func main() {
 
 	}
 	storyHandler := handler.ReturnStoryHandler(story, "intro")
-	fmt.Printf("Starting the sercer on %d\n", *port)
+	fmt.Printf("Starting the server on %d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), storyHandler))
 }
