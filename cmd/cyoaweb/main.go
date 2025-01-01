@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -33,7 +32,7 @@ func main() {
 	}
 	storyHandler, err := handler.ReturnStoryHandler(story, "intro")
 	if nil != err {
-		errors.New("Application startup failed to start Story Handler")
+		fmt.Println("Application startup failed to start Story Handler")
 		os.Exit(3)
 	}
 	fmt.Printf("Starting the server on %d\n", *port)
