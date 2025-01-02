@@ -5,10 +5,18 @@ This is an attempt to solve the coding challenges for building simple tools as w
 The repository contains free exercises provided on John Calhoun's site [here](https://courses.calhoun.io/courses/cor_gophercises)
 Solutions for the problems attempted are as below 
 
-1. [quiz Game](https://courses.calhoun.io/lessons/les_goph_01) 
+1. [Quiz Game](https://courses.calhoun.io/lessons/les_goph_01) 
     - Builds a simple quiz game where users is asked for a CSV with simple questions and answers and then those questions are used to quiz the user.
-    - **Concepts** : GoRoutines, time and Channels   
+    - **Concepts** : flags, GoRoutines, time and Channels   
 2. [URL Shortner](https://courses.calhoun.io/lessons/les_goph_04) 
     - Builds a simple URL shortner to take in a shortened URL andget the complete URL for the suggested URL 
     - **Concepts** : YAML file parsing, introduction of MUX for routing
-    - **Helper Packages** : net/http, gopkg.in/yaml.v3 
+    - **Helper Packages** : net/http, gopkg.in/yaml.v3
+3. [Create Your Own Adventure(CYOA)-Web App](https://courses.calhoun.io/lessons/les_goph_16)
+    - Build a minimalistic HTML template based we application that features a Simple HTML page with capabilitites of updating the page content based on configured JSON file. 
+    - **Concepts** : GO HTML teamplate Rendering, JSON Parsing, Structs tagging for JSON fields, functional Options
+    - **Helper Packages** : encoding/json, net/http
+4. [Link Parser Utility](https://courses.calhoun.io/lessons/les_goph_16)
+    - A simple utility that extracts all the links from a page given a HTML file
+    - **Concepts** : HTML parsing
+    - **Helper Packages**: golang.org/x/net/htm           
