@@ -69,7 +69,7 @@ func extractTextFromNodeTree(node *html.Node) string {
 	var textResult string
 	// Run DFS of passed node to extract all the text from the node
 	for element := node.FirstChild; element != nil; element = element.NextSibling {
-		textResult += extractTextFromNodeTree(element) + " "
+		textResult += extractTextFromNodeTree(element)
 	}
 	return strings.Join(strings.Fields(textResult), " ")
 }
