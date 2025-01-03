@@ -1,14 +1,27 @@
 package main
 
 import (
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/yedeka/Go_Projects/cmd/linkparser/link"
 	"github.com/yedeka/Go_Projects/cmd/sitemapBuilder/filter"
 )
+
+const xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
+
+type loc struct {
+	Value string `xml:"loc"`
+}
+
+type urlset struct {
+	Urls  []loc  `xml:"url"`
+	Xmlns string `xml:"xmlns,attr"`
+}
 
 func main() {
 
@@ -16,7 +29,25 @@ func main() {
 	if nil != err {
 		fmt.Println(err.Error())
 	}
-	fmt.Printf("%+v", linksList)
+	//fmt.Printf("%+v", linksList)
+	generateXML(linksList)
+
+}
+
+func generateXML(parsedURLs map[string]struct{}) {
+	toXml := urlset{
+		Xmlns: xmlns,
+	}
+	for page := range parsedURLs {
+		toXml.Urls = append(toXml.Urls, loc{page})
+	}
+	fmt.Print(xml.Header)
+	enc := xml.NewEncoder(os.Stdout)
+	enc.Indent("", "  ")
+	if err := enc.Encode(toXml); err != nil {
+		panic(err)
+	}
+	fmt.Println()
 }
 
 func startProcess() (map[string]struct{}, error) {

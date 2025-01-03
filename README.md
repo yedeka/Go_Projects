@@ -23,4 +23,4 @@ Solutions for the problems attempted are as below
 5. [SiteMap builder](https://courses.calhoun.io/lessons/les_goph_24)
     - Utility built on top of the Link parser utility that takes in a seed Url and generates a site map of all the pages linked to the seed URL. Use BFS for getting links of all the child links obtianed from the seed link.
     - **Concepts** : Captrure resonse HTML of a GET request, defer, Copying data from reader to writer stream, BFS
-    - **Helper Packages** : net/http  
+    - **Helper Packages** : net/http, encoding/xml  
