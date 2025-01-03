@@ -11,7 +11,8 @@ type RelativePathFilter struct {
 }
 
 func (relativePathFilter RelativePathFilter) IsApplicable(urlLink link.Link) bool {
-	return strings.HasPrefix(urlLink.Href, "/")
+	// Check if we have links starting with '/' and no self references
+	return strings.HasPrefix(urlLink.Href, "/") && len(urlLink.Href) > 1
 }
 
 func (relativePathFilter RelativePathFilter) Apply(urlLink link.Link) (link.Link, error) {

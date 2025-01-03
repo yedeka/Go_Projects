@@ -11,27 +11,69 @@ import (
 )
 
 func main() {
-	seedUrl := flag.String("url", "https://gophercises.com", "URL of the site to start building Site Map")
-	flag.Parse()
-	htmlResponse, err := processURL(*seedUrl)
+
+	linksList, err := startProcess()
 	if nil != err {
 		fmt.Println(err.Error())
 	}
-	linksList, err := extractSanitizeLinks(htmlResponse)
-	if nil != err {
-		fmt.Println(err.Error())
-	}
-	defer htmlResponse.Body.Close()
 	fmt.Printf("%+v", linksList)
 }
 
+func startProcess() (map[string]struct{}, error) {
+	urlVal, deapth := processFlags()
+	linksList, err := PrepareSiteMap(urlVal, deapth)
+	if nil != err {
+		return nil, err
+	}
+	return linksList, nil
+}
+
+func processFlags() (string, int) {
+	seedUrl := flag.String("url", "https://gophercises.com", "URL of the site to start building Site Map")
+	depth := flag.Int("deapth", 3, "Deapth of parsing links on a page")
+	flag.Parse()
+	return *seedUrl, *depth
+}
+
+func PrepareSiteMap(seedURL string, depth int) (map[string]struct{}, error) {
+	visitedURLs := make(map[string]struct{})
+	var queue map[string]struct{}
+	levelQueue := map[string]struct{}{
+		seedURL: {},
+	}
+
+	for i := 0; i <= depth; i++ {
+		queue, levelQueue = levelQueue, make(map[string]struct{})
+		for url := range queue {
+			// Parse the URL at hand only if it is not visited
+			if _, ok := visitedURLs[url]; !ok {
+				childrenLinks, err := processURL(url)
+				if nil != err {
+					return nil, err
+				}
+				// Parse the links to extract text to be given in SiteMap
+				for _, link := range childrenLinks {
+					levelQueue[link.Href] = struct{}{}
+				}
+				visitedURLs[url] = struct{}{}
+			}
+		}
+	}
+	return visitedURLs, nil
+}
+
 // processURL function takes a URL, fires a get call to fetch the cotent of the web page and return corresponding reader to caller.
-func processURL(siteMapUrl string) (*http.Response, error) {
+func processURL(siteMapUrl string) ([]link.Link, error) {
 	resp, err := http.Get(siteMapUrl)
 	if err != nil {
 		return nil, fmt.Errorf("error while getting response from %s", siteMapUrl)
 	}
-	return resp, nil
+	filteredLinks, err := extractSanitizeLinks(resp)
+	if nil != err {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return filteredLinks, nil
 }
 
 func extractSanitizeLinks(responseHTML *http.Response) ([]link.Link, error) {
