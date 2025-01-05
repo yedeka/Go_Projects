@@ -1,0 +1,8 @@
+
+server:
+  port: 8080
+
+database:
+  dbname: "boltdb/tasks.db" 
+  dbTimeout: 10
+  dbBucketName: "tasks"

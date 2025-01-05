@@ -26,5 +26,5 @@ Solutions for the problems attempted are as below
     - **Packages** : net/http, encoding/xml  
 6. [CLI TODO utility](https://courses.calhoun.io/lessons/les_goph_35)
     - Utility built using the [**spf13/cobra**](https://github.com/spf13/cobra?tab=readme-ov-file) library that gives a simple CLI TODO application.
-    - **Concepts** - CLI application, cobra usage for creating CLI applications
+    - **Concepts** - CLI application, cobra usage for creating CLI applications, db integration
     - **Packages** : spf13/cobra 
