@@ -30,6 +30,9 @@ func ConnectToDb(dbConfig config.DatabaseConfiguration) (*TaskDb, error) {
 		_, err := tx.CreateBucketIfNotExists([]byte(dbConfig.DbBucketName))
 		return err
 	}
-	taskRepository.Update(repositoryGenerator)
+	err = taskRepository.Update(repositoryGenerator)
+	if nil != err {
+		return nil, fmt.Errorf("error while creating Task bucket")
+	}
 	return taskDb, nil
 }

@@ -1,6 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"path/filepath"
+
+	homeDir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -38,5 +42,12 @@ func LoadConfigurations() (*Configurations, error) {
 	if nil != err {
 		return nil, err
 	}
+	// Use User's home directory to create the databse
+	homedirectory, err := homeDir.Dir()
+	if nil != err {
+		return nil, fmt.Errorf(" error while locating home directory of user")
+	}
+	dbPath := filepath.Join(homedirectory, config.Database.DbName)
+	config.Database.DbName = dbPath
 	return config, nil
 }
