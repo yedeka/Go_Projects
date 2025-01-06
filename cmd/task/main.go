@@ -30,7 +30,15 @@ func main() {
 	if nil != err {
 		fmt.Printf("%s", err.Error())
 	}
-	fmt.Printf("TaskList => %+v \n", taskList)
+	for _, task := range taskList {
+		fmt.Printf("Task to be deleted => %+v \n", task)
+		err := dao.DeleteTask(task.TaskId, db)
+
+		if nil != err {
+			fmt.Printf("Error while deleting the task %s", err.Error())
+		}
+	}
+
 	defer db.TaskRepository.Close()
 	//cmd.RootCmd.Execute()
 }

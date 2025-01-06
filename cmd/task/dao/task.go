@@ -86,12 +86,22 @@ func ListAllTasks(db *TaskDb) ([]Task, error) {
 	return tasklist, nil
 }
 
+// deleteTask takes in a taskId for the task to be deleted and deletes the task for given Id
+func DeleteTask(taskId int, db *TaskDb) error {
+	return db.TaskRepository.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(db.BucketName)
+		return bucket.Delete(itob(taskId))
+	})
+}
+
+// itob function takes an integer and gives a byte array used for bucket key
 func itob(v int) []byte {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(v))
 	return b
 }
 
+// btoI takes a byte array and gives an integer to be used for converting db keys to displayable integers.
 func btoi(b []byte) int {
 	return int(binary.BigEndian.Uint64(b))
 }
