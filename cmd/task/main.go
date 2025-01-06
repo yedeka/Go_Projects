@@ -13,11 +13,24 @@ func main() {
 	if nil != err {
 		fmt.Printf("Config error %v", err)
 	}
-	db, err := dao.ConnectToDb(configurations.Database)
+	dbConfig := configurations.Database
+	db, err := dao.ConnectToDb(dbConfig)
+	if nil != err {
+		fmt.Println("Error while connecting to Databse")
+		fmt.Printf("%s", err.Error())
+	}
+
+	/*taskId, err := dao.CreateTask("Testing_Task", db)
 	if nil != err {
 		fmt.Printf("%s", err.Error())
 	}
+	fmt.Printf("Created tasks successfully with Task Id %d", taskId)
+	*/
+	taskList, err := dao.ListAllTasks(db)
+	if nil != err {
+		fmt.Printf("%s", err.Error())
+	}
+	fmt.Printf("TaskList => %+v \n", taskList)
 	defer db.TaskRepository.Close()
-	fmt.Println("Finished creating db and Tasks bucket")
 	//cmd.RootCmd.Execute()
 }
