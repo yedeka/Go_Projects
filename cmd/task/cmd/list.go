@@ -14,7 +14,7 @@ var listCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		taskList, err := dao.ListAllTasks()
 		if nil != err {
-			fmt.Printf("%s", err.Error())
+			fmt.Printf("%s", err)
 		}
 		if len(taskList) == 0 {
 			fmt.Println("You have no pending tasks under your name. Feel free to add new tasks")
