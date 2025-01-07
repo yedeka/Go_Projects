@@ -4,33 +4,30 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/yedeka/Go_Projects/cmd/task/dao"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Provides a list of all the pending tasks",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		taskList, err := dao.ListAllTasks()
+		if nil != err {
+			fmt.Printf("%s", err.Error())
+		}
+		if len(taskList) == 0 {
+			fmt.Println("You have no pending tasks under your name. Feel free to add new tasks")
+		} else {
+			fmt.Print("You have the following tasks: \n")
+			for _, task := range taskList {
+				fmt.Printf("%d. %s \n", task.TaskId, task.TaskName)
+			}
+			fmt.Println("")
+		}
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

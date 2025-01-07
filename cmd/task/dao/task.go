@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -18,6 +19,23 @@ type TaskDb struct {
 type Task struct {
 	TaskName string
 	TaskId   int
+}
+
+var taskDbConnection *TaskDb
+
+func init() {
+	configurations, err := config.LoadConfigurations()
+	if nil != err {
+		fmt.Printf("Config error %v", err)
+		os.Exit(3)
+	}
+	dbConfig := configurations.Database
+	db, err := ConnectToDb(dbConfig)
+	if nil != err {
+		fmt.Println("Error while connecting to Databse")
+		fmt.Printf("%s", err.Error())
+	}
+	taskDbConnection = db
 }
 
 // ConnectToDb creates a connection to BoltDB and returns the pointer to corresponding connection or an error if any error is encoutered
@@ -47,10 +65,10 @@ func ConnectToDb(dbConfig config.DatabaseConfiguration) (*TaskDb, error) {
 
 // CreateTask takes in the bucketName and Task name alongwith connection object to create the Connection and returns the task ID or error
 // If any error is encountered while storing the task in Db.
-func CreateTask(task string, db *TaskDb) (int, error) {
+func CreateTask(task string) (int, error) {
 	var id int
-	err := db.TaskRepository.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(db.BucketName)
+	err := taskDbConnection.TaskRepository.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(taskDbConnection.BucketName)
 		id64, _ := bucket.NextSequence()
 		id = int(id64)
 		key := itob(id)
@@ -65,10 +83,10 @@ func CreateTask(task string, db *TaskDb) (int, error) {
 }
 
 // ListAllTasks -Lists all the tasks added to db in the bucket for the TODO application.
-func ListAllTasks(db *TaskDb) ([]Task, error) {
+func ListAllTasks() ([]Task, error) {
 	var tasklist []Task
-	err := db.TaskRepository.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(db.BucketName)
+	err := taskDbConnection.TaskRepository.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(taskDbConnection.BucketName)
 		cursor := bucket.Cursor()
 
 		for key, value := cursor.First(); nil != key; key, value = cursor.Next() {
@@ -87,9 +105,9 @@ func ListAllTasks(db *TaskDb) ([]Task, error) {
 }
 
 // deleteTask takes in a taskId for the task to be deleted and deletes the task for given Id
-func DeleteTask(taskId int, db *TaskDb) error {
-	return db.TaskRepository.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(db.BucketName)
+func DeleteTask(taskId int) error {
+	return taskDbConnection.TaskRepository.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(taskDbConnection.BucketName)
 		return bucket.Delete(itob(taskId))
 	})
 }
