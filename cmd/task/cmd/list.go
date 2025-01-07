@@ -20,8 +20,8 @@ var listCmd = &cobra.Command{
 			fmt.Println("You have no pending tasks under your name. Feel free to add new tasks")
 		} else {
 			fmt.Print("You have the following tasks: \n")
-			for _, task := range taskList {
-				fmt.Printf("%d. %s \n", task.TaskId, task.TaskName)
+			for i, task := range taskList {
+				fmt.Printf("%d. %s \n", i+1, task.TaskName)
 			}
 			fmt.Println("")
 		}
