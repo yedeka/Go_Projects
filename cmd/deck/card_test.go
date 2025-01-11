@@ -24,6 +24,6 @@ func TestDefaultSort(t *testing.T) {
 	newDeck := New(DefaultSort)
 	expectedCard := Card{Suit: Spade, Rank: Ace}
 	if expectedCard != newDeck[0] {
-		t.Error("Expected Ace of Spades as first card but received", newDeck[0])
+		t.Error("Expected Ace of Spade as first card but received", newDeck[0])
 	}
 }

@@ -43,6 +43,10 @@ type Card struct {
 
 type CardOptions func([]Card) []Card
 
+type comparator func(i, j int) bool
+
+type sorter func(cards []Card) comparator
+
 var suits = [...]Suit{Spade, Diamond, Club, Heart}
 
 const (
@@ -77,7 +81,7 @@ func DefaultSort(cards []Card) []Card {
 	return cards
 }
 
-func Less(cards []Card) func(i, j int) bool {
+var Less sorter = func(cards []Card) comparator {
 	return func(i, j int) bool {
 		return absRank(cards[i]) < absRank(cards[j])
 	}
