@@ -48,3 +48,24 @@ func TestJokers(t *testing.T) {
 		t.Error("Expected Jokers: 4, Received : ", cnt)
 	}
 }
+
+func TestFilter(t *testing.T) {
+	filter := func(card Card) bool {
+		return card.Rank == Two || card.Rank == Three
+	}
+	filteredCards := New(Filter(filter))
+
+	for _, filteredCard := range filteredCards {
+		if filteredCard.Rank == Two || filteredCard.Rank == Three {
+			t.Error("Cards of Rank Two or Three are not filered correctly")
+		}
+	}
+}
+
+func TestDeck(t *testing.T) {
+	deckOfCards := New(Deck(4))
+	epectedLength := 13 * 4 * 4
+	if epectedLength != len(deckOfCards) {
+		t.Errorf("Deck cards count required: %d, found: %d", 13*4*4, len(deckOfCards))
+	}
+}

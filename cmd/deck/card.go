@@ -128,3 +128,27 @@ func Jokers(n int) CardOptions {
 		return cards
 	}
 }
+
+func Filter(f func(card Card) bool) CardOptions {
+	return func(cards []Card) []Card {
+		filteredCards := []Card{}
+		for _, card := range cards {
+			if !f(card) {
+				filteredCards = append(filteredCards, card)
+			}
+		}
+		return filteredCards
+	}
+}
+
+func Deck(n int) CardOptions {
+	return func(cards []Card) []Card {
+		deck := []Card{}
+
+		for i := 0; i < n; i++ {
+			deck = append(deck, cards...)
+		}
+
+		return deck
+	}
+}
