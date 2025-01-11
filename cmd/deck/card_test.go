@@ -35,3 +35,16 @@ func TestCustomSort(t *testing.T) {
 		t.Error("Expected Ace of Spade as first card but received", newDeck[0])
 	}
 }
+
+func TestJokers(t *testing.T) {
+	newDeckWithJokers := New(Jokers(3))
+	var cnt uint
+	for _, j := range newDeckWithJokers {
+		if j.Suit == Joker {
+			cnt += 1
+		}
+	}
+	if cnt != 3 {
+		t.Error("Expected Jokers: 4, Received : ", cnt)
+	}
+}

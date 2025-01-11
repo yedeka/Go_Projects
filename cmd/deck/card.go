@@ -3,7 +3,9 @@ package deck
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"sort"
+	"time"
 )
 
 type Suit uint8
@@ -68,24 +70,18 @@ func New(opts ...CardOptions) []Card {
 		for rank := minRank; rank <= maxRank; rank += 1 {
 			cards = append(cards, Card{Suit: suit, Rank: rank})
 		}
-
-		for _, opt := range opts {
-			cards = opt(cards)
-		}
 	}
+
+	for _, opt := range opts {
+		cards = opt(cards)
+	}
+
 	return cards
 }
 
 func DefaultSort(cards []Card) []Card {
 	sort.Slice(cards, Less(cards))
 	return cards
-}
-
-func CustomSort(less sorter) func([]Card) []Card {
-	return func(cards []Card) []Card {
-		sort.Slice(cards, less(cards))
-		return cards
-	}
 }
 
 var Less sorter = func(cards []Card) comparator {
@@ -102,4 +98,33 @@ var ReverseLess sorter = func(cards []Card) comparator {
 
 func absRank(card Card) int {
 	return int(card.Suit)*int(maxRank) + int(card.Rank)
+}
+
+func CustomSort(less sorter) CardOptions {
+	return func(cards []Card) []Card {
+		sort.Slice(cards, less(cards))
+		return cards
+	}
+}
+
+var Shuffle CardOptions = func(cards []Card) []Card {
+	shuffledCards := make([]Card, len(cards))
+	rand.New(rand.NewPCG(uint64(time.Now().Unix()), 15))
+	perm := rand.Perm(len(cards))
+	for i, j := range perm {
+		shuffledCards[i] = cards[j]
+	}
+	return shuffledCards
+}
+
+func Jokers(n int) CardOptions {
+	return func(cards []Card) []Card {
+		for i := 0; i < n; i++ {
+			cards = append(cards, Card{
+				Suit: Joker,
+				Rank: Rank(i),
+			})
+		}
+		return cards
+	}
 }
