@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"sort"
-	"time"
 )
 
 type Suit uint8
@@ -107,14 +106,17 @@ func CustomSort(less sorter) CardOptions {
 	}
 }
 
-var Shuffle CardOptions = func(cards []Card) []Card {
-	shuffledCards := make([]Card, len(cards))
-	rand.New(rand.NewPCG(uint64(time.Now().Unix()), 15))
-	perm := rand.Perm(len(cards))
-	for i, j := range perm {
-		shuffledCards[i] = cards[j]
+func Shuffle(source rand.Source) CardOptions {
+	return func(cards []Card) []Card {
+		shuffledCards := make([]Card, len(cards))
+		rand.New(source)
+		perm := rand.Perm(len(cards))
+		for i, j := range perm {
+			fmt.Printf("random index %d \n", j)
+			shuffledCards[i] = cards[j]
+		}
+		return shuffledCards
 	}
-	return shuffledCards
 }
 
 func Jokers(n int) CardOptions {
