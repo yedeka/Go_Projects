@@ -27,3 +27,11 @@ func TestDefaultSort(t *testing.T) {
 		t.Error("Expected Ace of Spade as first card but received", newDeck[0])
 	}
 }
+
+func TestCustomSort(t *testing.T) {
+	newDeck := New(CustomSort(ReverseLess))
+	expectedCard := Card{Suit: Heart, Rank: King}
+	if expectedCard != newDeck[0] {
+		t.Error("Expected Ace of Spade as first card but received", newDeck[0])
+	}
+}

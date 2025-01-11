@@ -81,9 +81,22 @@ func DefaultSort(cards []Card) []Card {
 	return cards
 }
 
+func CustomSort(less sorter) func([]Card) []Card {
+	return func(cards []Card) []Card {
+		sort.Slice(cards, less(cards))
+		return cards
+	}
+}
+
 var Less sorter = func(cards []Card) comparator {
 	return func(i, j int) bool {
 		return absRank(cards[i]) < absRank(cards[j])
+	}
+}
+
+var ReverseLess sorter = func(cards []Card) comparator {
+	return func(i, j int) bool {
+		return absRank(cards[i]) > absRank(cards[j])
 	}
 }
 
